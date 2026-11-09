@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IntelliScreen AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111b33;--mute:#5b6478;--line:#dfe3ee;--bg:#f5f7fc;--card:#fff;--blue:#3b5bdb;--t:#3b5bdb;--e:#0ca678;--ed:#f59f00;--x:#ae3ec9;--bad:#c92a2a;
+--head:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--body:"Public Sans","Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body)}
+h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}button,input,textarea{font:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}[hidden]{display:none!important}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:.7rem 1.2rem;font-weight:600;cursor:pointer}
+.btn:hover{background:#2f4ac0}.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn:disabled{opacity:.6;cursor:wait}
+input[type=text],input[type=email],input[type=password],textarea{width:100%;padding:.65rem .8rem;border:1px solid var(--line);border-radius:10px;background:#fff}
+label{display:block;font-weight:600;margin:1rem 0 .35rem}.err{color:var(--bad);min-height:1.4em;margin:.6rem 0 0;font-size:.95rem}
+/* auth */
+#auth{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:3rem;padding:4rem min(6vw,5rem)}
+#auth h1{font-size:clamp(2.2rem,4.6vw,3.6rem);max-width:13ch}#auth p.lead{color:var(--mute);max-width:40ch;font-size:1.1rem;margin:1.2rem 0 0}
+.rings{margin-top:2.5rem;width:190px;aspect-ratio:1;border-radius:50%;background:#e0e6fa;display:grid;place-items:center}
+.rings div{width:72%;aspect-ratio:1;border-radius:50%;background:#eaeefb;display:grid;place-items:center}.rings div div{width:70%;background:#f5f7fd;font:700 1.6rem var(--head);color:var(--blue)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.6rem}
+.tabs{display:flex;gap:.4rem;margin-bottom:.4rem}.tabs button{flex:1;padding:.55rem;border:0;border-bottom:3px solid var(--line);background:none;font-weight:600;color:var(--mute);cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--blue)}
+/* app */
+header{display:flex;align-items:center;justify-content:space-between;padding:.9rem min(4vw,2.5rem);background:#fff;border-bottom:1px solid var(--line)}
+.logo{font:700 1.25rem var(--head)}.logo span{color:var(--blue)}.badge{font-size:.85rem;padding:.25rem .7rem;border-radius:99px;background:#eaeefb;color:#2b44a8;margin-right:.8rem}
+.badge.off{background:#fff3d6;color:#8a5a00}
+main{display:grid;grid-template-columns:minmax(300px,400px) 1fr;gap:1.5rem;padding:1.5rem min(4vw,2.5rem);align-items:start}
+.drop{border:2px dashed #b9c3e6;border-radius:12px;padding:1.1rem;text-align:center;color:var(--mute);cursor:pointer;background:#fafbff}
+.drop.over{border-color:var(--blue);background:#eef1fd}.files{font-size:.9rem;color:var(--mute);margin:.5rem 0 0}
+input[type=range]{width:100%;accent-color:var(--blue)}.row{display:flex;justify-content:space-between;align-items:baseline}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1rem;font-size:.9rem;color:var(--mute);margin-bottom:1rem}.legend i,.key i{display:inline-block;width:.8rem;height:.8rem;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.2rem}.tile{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.8rem 1rem}
+.tile b{display:block;font:700 1.8rem var(--head)}.tile span{color:var(--mute);font-size:.9rem}
+.cand{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:.7rem}.cand summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:2.2rem 1fr auto;gap:.2rem 1rem;align-items:center;padding:.9rem 1rem}
+.cand summary::-webkit-details-marker{display:none}.rank{font:700 1.3rem var(--head);color:var(--mute)}.nm{font-weight:600;overflow-wrap:anywhere}
+.pill{font-size:.8rem;padding:.15rem .6rem;border-radius:99px;margin-left:.5rem;font-weight:600}.pill.s{background:#d3f9e8;color:#087f5b}.pill.b{background:#f1f3f5;color:#5b6478}
+.sc{font:700 1.7rem var(--head);text-align:right}.bar{grid-column:2/4;position:relative;height:12px;background:#eef0f6;border-radius:6px;overflow:hidden;display:flex}
+.bar span{height:100%}.tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink)}
+.body{padding:0 1rem 1rem 4.2rem;display:grid;gap:.7rem}.body h3{font-size:1rem}.body ul{margin:.2rem 0 0;padding-left:1.1rem}.body p{margin:.2rem 0 0;color:var(--mute)}
+.cats{display:flex;gap:1rem;flex-wrap:wrap;font-size:.9rem}.empty{color:var(--mute);padding:2.5rem 1rem;text-align:center;border:1px dashed var(--line);border-radius:12px;background:#fff}
+@media(max-width:860px){#auth{grid-template-columns:1fr;padding:2.5rem 1.2rem}main{grid-template-columns:1fr}.tiles{grid-template-columns:repeat(2,1fr)}.body{padding-left:1rem}}
+@media(prefers-reduced-motion:no-preference){.bar span{transition:width .6s ease}}
+</style>
+</head>
+<body>
+<section id="auth">
+  <div>
+    <h1>Rank resumes by fit, with reasons</h1>
+    <p class="lead">Upload a job description and a batch of resumes. Claude reasons about each candidate, a weighted rubric scores them from 0 to 100, and you get a ranked shortlist with strengths and gaps.</p>
+    <div class="rings" aria-hidden="true"><div><div>0–100</div></div></div>
+  </div>
+  <div class="card">
+    <div class="tabs" role="tablist"><button role="tab" id="tLogin" aria-selected="true">Log in</button><button role="tab" id="tReg" aria-selected="false">Create account</button></div>
+    <div id="af"><label for="em">Email</label><input id="em" type="email" autocomplete="email" required>
+    <label for="pw">Password (8+ characters)</label><input id="pw" type="password" autocomplete="current-password" required>
+    <p class="err" id="aerr" role="alert"></p><button class="btn" id="go" style="width:100%">Log in</button></div>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <header><div class="logo">Intelli<span>Screen</span> AI</div><div><span class="badge" id="mode"></span><button class="btn ghost" id="out">Log out</button></div></header>
+  <main>
+    <div class="card">
+      <h2 style="font-size:1.3rem">New screening</h2>
+      <label for="jd">Job description</label>
+      <textarea id="jd" rows="7" placeholder="Paste the role requirements, or attach a PDF/DOCX/TXT below"></textarea>
+      <input type="file" id="jdf" accept=".pdf,.docx,.txt" aria-label="Job description file" style="margin-top:.5rem;font-size:.9rem">
+      <label for="rf">Resumes</label>
+      <div class="drop" id="drop" tabindex="0">Drop PDF, DOCX or TXT resumes here, or click to choose</div>
+      <input type="file" id="rf" accept=".pdf,.docx,.txt" multiple hidden><p class="files" id="fl">No files chosen</p>
+      <label for="th" class="row"><span>Shortlist threshold</span><span id="thv">40</span></label>
+      <input type="range" id="th" min="0" max="100" value="40">
+      <p class="err" id="serr" role="alert"></p>
+      <button class="btn" id="run" style="width:100%">Screen resumes</button>
+    </div>
+    <div id="res"><div class="empty">Results will appear here, ranked by score, with the reasoning behind each one.</div></div>
+  </main>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const W={technical:.40,experience:.35,education:.15,extras:.10},COL={technical:"var(--t)",experience:"var(--e)",education:"var(--ed)",extras:"var(--x)"},LBL={technical:"Technical 40%",experience:"Experience 35%",education:"Education 15%",extras:"Extras 10%"};
+let token=sessionStorage.getItem("t"),reg=false,files=[],last=null;
+const api=async(p,o={})=>{const r=await fetch(p,{...o,headers:{...(o.headers||{}),...(token?{Authorization:"Bearer "+token}:{})}});
+  if(r.status===401&&token){logout();}const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(typeof j.detail==="string"?j.detail:"Check the form and try again");return j};
+function setTab(r){reg=r;$("#tLogin").setAttribute("aria-selected",!r);$("#tReg").setAttribute("aria-selected",r);$("#go").textContent=r?"Create account":"Log in";$("#pw").autocomplete=r?"new-password":"current-password";$("#aerr").textContent=""}
+$("#tLogin").onclick=()=>setTab(false);$("#tReg").onclick=()=>setTab(true);
+$("#af").addEventListener("keydown",e=>{if(e.key==="Enter")$("#go").click()});
+$("#go").onclick=async()=>{try{const j=await api(reg?"/api/register":"/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$("#em").value,password:$("#pw").value})});
+  token=j.token;sessionStorage.setItem("t",token);enter()}catch(e){$("#aerr").textContent=e.message}};
+function logout(){token=null;sessionStorage.removeItem("t");$("#app").hidden=true;$("#auth").hidden=false}
+$("#out").onclick=logout;
+async function enter(){$("#auth").hidden=true;$("#app").hidden=false;const h=await fetch("/api/health").then(r=>r.json());const m=$("#mode");
+  m.textContent=h.mode==="claude"?"Claude reasoning on":"Offline keyword mode (no API key)";m.className="badge"+(h.mode==="claude"?"":" off")}
+const setFiles=l=>{files=[...l];$("#fl").textContent=files.length?files.length+" file(s): "+files.map(f=>f.name).join(", "):"No files chosen"};
+$("#drop").onclick=()=>$("#rf").click();$("#drop").onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#rf").click()}};
+$("#rf").onchange=e=>setFiles(e.target.files);
+["dragover","dragenter"].forEach(n=>$("#drop").addEventListener(n,e=>{e.preventDefault();$("#drop").classList.add("over")}));
+["dragleave","drop"].forEach(n=>$("#drop").addEventListener(n,e=>{e.preventDefault();$("#drop").classList.remove("over")}));
+$("#drop").addEventListener("drop",e=>setFiles(e.dataTransfer.files));
+$("#th").oninput=e=>$("#thv").textContent=e.target.value;
+$("#run").onclick=async()=>{$("#serr").textContent="";if(!files.length){$("#serr").textContent="Choose at least one resume";return}
+  const fd=new FormData();fd.append("jd_text",$("#jd").value);fd.append("threshold",$("#th").value);files.forEach(f=>fd.append("resumes",f));if($("#jdf").files[0])fd.append("jd_file",$("#jdf").files[0]);
+  const b=$("#run");b.disabled=true;b.textContent="Screening…";
+  try{last=await api("/api/screen",{method:"POST",body:fd});render(last)}catch(e){$("#serr").textContent=e.message}finally{b.disabled=false;b.textContent="Screen resumes"}};
+const li=a=>"<ul>"+a.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul>";
+function render(d){const R=d.results,sh=R.filter(r=>r.status==="Shortlisted").length;
+  let h=`<div class="tiles"><div class="tile"><b>${R.length}</b><span>Candidates evaluated</span></div><div class="tile"><b>${sh}</b><span>Shortlisted (threshold ${d.threshold})</span></div><div class="tile"><b>${R[0]?R[0].score:"–"}</b><span>Top candidate score</span></div><div class="tile"><b>${d.skipped.length}</b><span>Files excluded</span></div></div>
+  <div class="row" style="margin-bottom:.6rem"><div class="legend key">${Object.keys(W).map(k=>`<span><i style="background:${COL[k]}"></i>${LBL[k]}</span>`).join("")}</div><div><button class="btn ghost" id="csv">Export CSV</button> <button class="btn ghost" id="json">Export JSON</button></div></div>`;
+  h+=R.map((r,i)=>`<details class="cand" ${i===0?"open":""}><summary><span class="rank">${r.rank}</span><span class="nm">${esc(r.name)}<span class="pill ${r.status==="Shortlisted"?"s":"b"}">${r.status}</span></span><span class="sc">${r.score}</span>
+   <div class="bar" role="img" aria-label="Score ${r.score} of 100">${Object.keys(W).map(k=>`<span style="width:${10*W[k]*r.categories[k]}%;background:${COL[k]}"></span>`).join("")}<i class="tick" style="left:${d.threshold}%"></i></div></summary>
+   <div class="body"><div class="cats">${Object.keys(W).map(k=>`<span><i style="display:inline-block;width:.7rem;height:.7rem;border-radius:3px;background:${COL[k]};margin-right:.3rem"></i>${k[0].toUpperCase()+k.slice(1)} ${r.categories[k]}/10</span>`).join("")}</div>
+   <div><h3>Strengths</h3>${li(r.strengths)}</div><div><h3>Gaps</h3>${li(r.gaps)}</div><div><h3>Recommendation</h3><p>${esc(r.recommendation)}</p></div><div><h3>Reasoning</h3><p>${esc(r.reasoning)}</p></div></div></details>`).join("");
+  if(d.skipped.length)h+=`<div class="card" style="margin-top:1rem"><h3>Excluded files</h3>${li(d.skipped.map(s=>s.name+": "+s.reason))}</div>`;
+  $("#res").innerHTML=h;$("#csv").onclick=()=>dl("screening.csv","text/csv",toCSV(R));$("#json").onclick=()=>dl("screening.json","application/json",JSON.stringify(d,null,2))}
+const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+const toCSV=R=>["Rank,Candidate,Score,Status,Technical,Experience,Education,Extras,Recommendation"].concat(R.map(r=>[r.rank,q(r.name),r.score,r.status,r.categories.technical,r.categories.experience,r.categories.education,r.categories.extras,q(r.recommendation)].join(","))).join("\n");
+function dl(n,t,c){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click();URL.revokeObjectURL(a.href)}
+if(token)enter();
+</script>
+</body>
+</html>

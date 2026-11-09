@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+pyjwt
+pdfplumber
+python-docx
+pandas
+anthropic
